@@ -16,16 +16,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
+      - name: Install Gradle
+        run: |
+          curl -fL https://services.gradle.org/distributions/gradle-9.6.0-bin.zip -o /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          echo "/tmp/gradle-9.6.0/bin" >> "$GITHUB_PATH"
 
       - name: Build debug APK
-        run: ./gradlew --no-daemon :app:assembleDebug
+        run: gradle --no-daemon :app:assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
